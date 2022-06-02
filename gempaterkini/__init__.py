@@ -1,15 +1,39 @@
 import bs4
 import requests
 
-description = '\nLatest Information Eartquake in Indonesia from BMKG\n'
 
-class GempaTerkini:
-    def __init__(self, url):
-        self.result = None
-        self.description = description
+class Bencana:
+    def __init__(self, url, description):
         self.url = url
+        self.description = description
+        self.result = None
 
-    def extract_data(self):
+    def scraping_data(self):
+        print('scraping_data not yet implemented')
+
+    def show_data(self):
+        print('show_data not yet implemented')
+
+    def show_description(self):
+        print(self.description)
+
+    def run(self):
+        self.scraping_data()
+        self.show_data()
+
+
+class BanjirTerkini(Bencana):
+    def __init__(self, url):
+        super(BanjirTerkini, self).__init__(url, 'NOT YET IMPLEMENTED, but it should return lates Flood in Indonesia')
+
+    def show_description(self):
+        print(f'\nUNDER CONSTRUCTION {self.description}')
+
+class GempaTerkini(Bencana):
+    def __init__(self, url):
+        super(GempaTerkini, self).__init__(url, 'To get the latest Eartquake in Indonesia from bmkg.co.id')
+    
+    def scraping_data(self):
         try:
             content = requests.get(self.url)
         except Exception:
@@ -67,7 +91,6 @@ class GempaTerkini:
             print('Data not found')
             return
 
-        print(self.description)
         print(f"Date : {self.result['time']['date']}")
         print(f"Hours : {self.result['time']['hours']}")
         print(f"Magnitude : {self.result['magnitude']}")
@@ -76,11 +99,12 @@ class GempaTerkini:
         print(f"Location : {self.result['location']}")
         print(f"{self.result['felt']}")
 
-    def run(self):
-        self.extract_data()
-        self.show_data()
-
 
 if __name__ == '__main__':
     gempa = GempaTerkini('https://www.bmkg.go.id/')
+    gempa.show_description()
     gempa.run()
+
+    banjir = BanjirTerkini('NOT YET')
+    banjir.show_description()
+    banjir.run()
