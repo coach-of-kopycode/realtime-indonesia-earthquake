@@ -1,75 +1,85 @@
+import bs4
 import requests
-from bs4 import BeautifulSoup
 
+description = '\nLatest Information Eartquake in Indonesia from BMKG\n'
 
-def extract_data():
-    try:
-        content = requests.get('https://www.bmkg.go.id/')
-    except Exception:
-        return None
+class GempaTerkini:
+    def __init__(self):
+        self.result = None
+        self.description = description
 
-    if content.status_code == 200:
-        soup = BeautifulSoup(content.text, 'html.parser')
+    def extract_data(self):
+        try:
+            content = requests.get('https://www.bmkg.go.id/')
+        except Exception:
+            return None
 
-        result = soup.find('div', {'class': 'col-md-6 col-xs-6 gempabumi-detail no-padding'})
-        result = result.findChildren('li')
+        if content.status_code == 200:
+            soup = bs4.BeautifulSoup(content.text, 'html.parser')
 
-        i = 0
-        date = None
-        hours = None
-        magnitude = None
-        depth = None
-        lu = None
-        bt = None
-        location = None
-        felt = None
+            result = soup.find('div', {'class': 'col-md-6 col-xs-6 gempabumi-detail no-padding'})
+            result = result.findChildren('li')
 
-        for res in result:
-            if i == 0:
-                time = res.text.split(', ')
-                date = time[0]
-                hours = time[1]
-            elif i == 1:
-                magnitude = res.text
-            elif i == 2:
-                depth = res.text
-            elif i == 3:
-                coordinate = res.text.split(' - ')
-                lu = coordinate[0]
-                bt = coordinate[1]
-            elif i == 4:
-                location = res.text
-            elif i == 5:
-                felt = res.text
+            i = 0
+            date = None
+            hours = None
+            magnitude = None
+            depth = None
+            lu = None
+            bt = None
+            location = None
+            felt = None
 
-            i = i + 1
+            for res in result:
+                if i == 0:
+                    time = res.text.split(', ')
+                    date = time[0]
+                    hours = time[1]
+                elif i == 1:
+                    magnitude = res.text
+                elif i == 2:
+                    depth = res.text
+                elif i == 3:
+                    coordinate = res.text.split(' - ')
+                    lu = coordinate[0]
+                    bt = coordinate[1]
+                elif i == 4:
+                    location = res.text
+                elif i == 5:
+                    felt = res.text
 
-        data = dict()
-        data['time'] = {'date': date, 'hours': hours}
-        data['magnitude'] = magnitude
-        data['depth'] = depth
-        data['coordinate'] = {'lu': lu, 'bt': bt}
-        data['location'] = location
-        data['felt'] = felt
-        return data
-    else:
-        return None
+                i = i + 1
 
+            data = dict()
+            data['time'] = {'date': date, 'hours': hours}
+            data['magnitude'] = magnitude
+            data['depth'] = depth
+            data['coordinate'] = {'lu': lu, 'bt': bt}
+            data['location'] = location
+            data['felt'] = felt
+            self.result = data
+        else:
+            return None
 
-def show_data(result):
-    if result is None:
-        print('Data not found')
-        return
+    def show_data(self):
+        if self.result is None:
+            print('Data not found')
+            return
 
-    print(f"Date : {result['time']['date']}")
-    print(f"Hours : {result['time']['hours']}")
-    print(f"Magnitude : {result['magnitude']}")
-    print(f"Depth : {result['depth']}")
-    print(f"Coordinate : {result['coordinate']['lu']}, {result['coordinate']['bt']}")
-    print(f"Location : {result['location']}")
-    print(f"{result['felt']}")
+        print(self.description)
+        print(f"Date : {self.result['time']['date']}")
+        print(f"Hours : {self.result['time']['hours']}")
+        print(f"Magnitude : {self.result['magnitude']}")
+        print(f"Depth : {self.result['depth']}")
+        print(f"Coordinate : {self.result['coordinate']['lu']}, {self.result['coordinate']['bt']}")
+        print(f"Location : {self.result['location']}")
+        print(f"{self.result['felt']}")
+
+    def run(self):
+        self.extract_data()
+        self.show_data()
 
 
 if __name__ == '__main__':
-    result = extract_data()
-    show_data(result)
+    gempa = GempaTerkini()
+    gempa.run()
