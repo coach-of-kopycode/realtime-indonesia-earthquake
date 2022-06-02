@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="earthquake-idbmkg",
-    version="0.0.1",
+    version="0.0.2",
     author="Todi Rahmat",
     author_email="todirahmat123@gmail.com",
     description="This package will get the latest eartquake data from BMKG | Indonesia Meteorological, Climatological, "
