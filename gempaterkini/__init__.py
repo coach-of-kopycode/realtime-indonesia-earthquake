@@ -4,13 +4,14 @@ import requests
 description = '\nLatest Information Eartquake in Indonesia from BMKG\n'
 
 class GempaTerkini:
-    def __init__(self):
+    def __init__(self, url):
         self.result = None
         self.description = description
+        self.url = url
 
     def extract_data(self):
         try:
-            content = requests.get('https://www.bmkg.go.id/')
+            content = requests.get(self.url)
         except Exception:
             return None
 
@@ -81,5 +82,5 @@ class GempaTerkini:
 
 
 if __name__ == '__main__':
-    gempa = GempaTerkini()
+    gempa = GempaTerkini('https://www.bmkg.go.id/')
     gempa.run()
